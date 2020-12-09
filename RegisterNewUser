@@ -1,0 +1,134 @@
+import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+
+public class RegisterNewUser extends JFrame implements ActionListener {
+	private JPanel contentPane;
+    private JTextField username;
+    private JTextField passwordField;
+    private JTextField name;
+
+    private JTextField street;
+    private JTextField zipcode;
+    private JTextField phoneNumber;
+
+    private JButton btnNewButton;
+	DatabaseManager databaseManager = new DatabaseManager();
+	public RegisterNewUser() {
+		contentPane = new JPanel();
+    	setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\User\\Desktop\\STDM.jpg"));
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(450, 190, 920, 340);
+        
+        setResizable(false);
+	    contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+	    setContentPane(contentPane);
+	    contentPane.setLayout(null);
+		JLabel lblNewUserRegister = new JLabel("New User Register");
+		lblNewUserRegister.setFont(new Font("Times New Roman", Font.PLAIN, 30));
+	    lblNewUserRegister.setBounds(350, 5, 325, 50);
+	    contentPane.add(lblNewUserRegister);
+	
+	    JLabel lblUserName = new JLabel("Username:");
+	    lblUserName.setFont(new Font("Tahoma", Font.PLAIN, 20));
+	    lblUserName.setBounds(58, 100, 99, 43);
+	    contentPane.add(lblUserName);
+
+	    username = new JTextField();
+	    username.setFont(new Font("Tahoma", Font.PLAIN, 20));
+	    username.setBounds(214, 100, 228, 40);
+	    contentPane.add(username);
+	    username.setColumns(10);
+	
+	    JLabel lblpasswordField = new JLabel("Password:");
+	    lblpasswordField.setFont(new Font("Tahoma", Font.PLAIN, 20));
+	    lblpasswordField.setBounds(58, 150, 99, 43);
+	    contentPane.add(lblpasswordField);
+	    
+	    passwordField = new JTextField();
+	    passwordField.setFont(new Font("Tahoma", Font.PLAIN, 20));
+	    passwordField.setBounds(214, 150, 228, 40);
+	    contentPane.add(passwordField);
+	    passwordField.setColumns(10);
+	    
+	    JLabel lblZip = new JLabel("Zipcodes:");
+	    lblZip.setFont(new Font("Tahoma", Font.PLAIN, 20));
+	    lblZip.setBounds(58, 200, 99, 43);
+	    contentPane.add(lblZip);
+	    
+	    zipcode = new JTextField();
+	    zipcode.setFont(new Font("Tahoma", Font.PLAIN, 20));
+	    zipcode.setBounds(214, 200, 228, 40);
+	    contentPane.add(zipcode);
+	    
+	    JLabel lblName = new JLabel("Name:");
+	    lblName.setFont(new Font("Tahoma", Font.PLAIN, 20));
+	    lblName.setBounds(500, 100, 99, 43);
+	    contentPane.add(lblName);
+	
+	    name = new JTextField();
+	    name.setFont(new Font("Tahoma", Font.PLAIN, 20));
+	    name.setBounds(650, 100, 228, 40);
+	    contentPane.add(name);
+	    name.setColumns(10);
+
+	    JLabel lblstreet = new JLabel("Street:");
+	    lblstreet.setFont(new Font("Tahoma", Font.PLAIN, 20));
+	    lblstreet.setBounds(500, 150, 99, 43);
+	    contentPane.add(lblstreet);
+	
+	    street = new JTextField();
+	    street.setFont(new Font("Tahoma", Font.PLAIN, 20));
+	    street.setBounds(650, 150, 228, 40);
+	    contentPane.add(street);
+	    
+	    JLabel lblPhoneNumber = new JLabel("Phone Number:");
+	    lblPhoneNumber.setFont(new Font("Tahoma", Font.PLAIN, 20));
+	    lblPhoneNumber.setBounds(500, 200, 200, 40);
+	    contentPane.add(lblPhoneNumber);
+	    
+	    phoneNumber = new JTextField();
+	    phoneNumber.setFont(new Font("Tahoma", Font.PLAIN, 20));
+	    phoneNumber.setBounds(650, 200, 228, 40);
+	    contentPane.add(phoneNumber);
+	    
+	    btnNewButton = new JButton("Register");
+	    btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 22));
+	    btnNewButton.setBounds(350, 250, 180, 60);
+	    contentPane.add(btnNewButton);
+	    addActionEvent();
+	    setVisible(true);
+	}//end RegisterNewUser
+	public void addActionEvent() {
+		btnNewButton.addActionListener(this);
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String userName = username.getText();
+        String userPassword = passwordField.getText();
+        String userRealName = name.getText();
+        String userStreet = street.getText();
+        String userZip = zipcode.getText();
+        String userPhone = phoneNumber.getText();
+        if (e.getSource() == btnNewButton) {
+        	boolean result = databaseManager.register_New_User(userName, userPassword, userRealName, userStreet, userZip, userPhone);
+        	if(result == true) {
+        		JOptionPane.showMessageDialog(this, "Register Successful");
+        		dispose();
+            	new LoginPage();
+        	}else {
+        		JOptionPane.showMessageDialog(this, "Register Unsuccessful");
+        	}
+        }//end registerButton
+        
+	}//end actionPerformed
+}//end RegisterNewUser program
