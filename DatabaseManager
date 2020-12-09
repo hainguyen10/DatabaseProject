@@ -1,0 +1,87 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class DatabaseManager {
+	public Statement stmt;
+	public Connection conn;
+	public DatabaseManager() {
+		String databaseName = "";
+		String userName = "";
+		
+		String passWord = "";
+		conn = establish_connection (databaseName, userName, passWord);
+	}//end constructor
+	public Connection establish_connection(String database_name, String sql_username, String sql_passwd) {
+        Connection conn = null;
+        try {
+            
+            System.out.println("Establishing connection with MySql server on satoshi..");
+            conn = DriverManager.getConnection(
+            "jdbc:mysql://152.20.12.152/"+database_name+"?useLegacyDatetimeCode=false&serverTimezone=America/New_York"+"&noAccessToProcedureBodies=true"+"&useSSL=false"+"&user="+sql_username+"&password="+sql_passwd);
+            
+            System.out.println("Connection with MySql server on satoshi.cis.uncw.edu established.");
+        }
+        catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState:     " + e.getSQLState());
+            System.out.println("VendorError:  " + e.getErrorCode());
+        }       
+        return conn;
+    }
+	public void openDataBase(Connection conn) throws SQLException {
+		stmt = conn.createStatement();
+	}//end OpenDatabase
+	public void closeDataBase() throws SQLException {
+		stmt.close();
+	}//end CloseDatabase
+///start write query.
+	public boolean validate_Login(String userName,String password) {
+		String sql = "SELECT * FROM Customers WHERE (Customer_ID = '"+userName+"' AND Password = '"+password+"')";
+		ResultSet rset;
+		try {
+			openDataBase(conn);
+			rset = stmt.executeQuery(sql);
+			if(rset.next() == true) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				closeDataBase();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}//end Validate_login method
+	public boolean register_New_User(String username, String passWord, String name, String address, String zipcode, String phoneNumber) {
+		String sql = "INSERT INTO Customers VALUES ('"+username+"','"+passWord+"','"+name+"','"+address+"','"+zipcode+"','"+phoneNumber+"')";
+		ResultSet rset;
+		try {
+			openDataBase(conn);
+			stmt.executeUpdate(sql);
+			sql = "SELECT * FROM Customers WHERE (Customer_ID = '"+username+"' AND Password = '"+passWord+"')";
+			rset = stmt.executeQuery(sql);
+			if(rset.next() == true) {
+				return true;
+			}else {
+				return false;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				closeDataBase();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}//end register_New_User method
+}//end of Database Manager
