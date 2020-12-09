@@ -1,0 +1,109 @@
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+public class LoginPage extends JFrame implements ActionListener{
+	DatabaseManager databaseManager = new DatabaseManager();
+	Container container = getContentPane();
+    JLabel userLabel = new JLabel("USERNAME");
+    JLabel passwordLabel = new JLabel("PASSWORD");
+    JTextField userTextField = new JTextField();
+    JPasswordField passwordField = new JPasswordField();
+    JButton loginButton = new JButton("LOGIN");
+    JButton resetButton = new JButton("CLEAR");
+    JButton newUserButton = new JButton("NEW USER");
+    JCheckBox showPassword = new JCheckBox("Show Password");
+	public LoginPage() {
+		setLayoutManager();
+        setLocationAndSize();
+        addComponentsToContainer();
+        setTitle("Welcome To The Login Page!");
+        addActionEvent();
+        setVisible(true);
+        setBounds(10, 10, 370, 450);
+	}//end LoginPage
+	public void setLayoutManager() {
+		container.setLayout(null);
+	}//end setLayoutManager
+	public void setLocationAndSize() {
+		userLabel.setBounds(50, 150, 100, 30);
+        userLabel.setFont(new Font("Serif", Font.BOLD, 16));
+        userLabel.setForeground(Color.BLUE);
+        passwordLabel.setBounds(50, 220, 100, 30);
+        passwordLabel.setForeground(Color.BLUE);
+        passwordLabel.setFont(new Font("Serif", Font.BOLD, 16));
+        userTextField.setBounds(150, 150, 150, 30);
+        passwordField.setBounds(150, 220, 150, 30);
+        showPassword.setBounds(150, 250, 150, 30);
+        newUserButton.setBounds(130, 330, 100, 30);
+        loginButton.setBounds(50, 300, 100, 30);
+        resetButton.setBounds(200, 300, 100, 30);
+	}//end setLocationAndSize
+	public void addComponentsToContainer() {
+		container.add(userLabel);
+        container.add(passwordLabel);
+        container.add(userTextField);
+        container.add(newUserButton);
+        container.add(passwordField);
+        container.add(showPassword);
+        container.add(loginButton);
+        container.add(resetButton);
+	}//end addComponentsToContainer
+	public void addActionEvent() {
+		loginButton.addActionListener(this);
+        resetButton.addActionListener(this);
+        showPassword.addActionListener(this);
+        newUserButton.addActionListener(this);
+	}//end addActionEvent
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		//code for LoginButton
+		if(e.getSource() == loginButton) {
+			String userText;
+	        String pwdText;
+	        userText = userTextField.getText();
+	        pwdText = passwordField.getText();
+	        boolean result = databaseManager.validate_Login(userText, pwdText);
+	        if(result == true) {
+	        	JOptionPane.showMessageDialog(this, "Welcome");
+                dispose();
+	        } else {
+	        	JOptionPane.showMessageDialog(this, "Invalid Username or Password");
+	        }
+		}//end LoginButton
+		//Code for NEW USER
+		else if(e.getSource() == newUserButton) {
+			dispose();
+			new RegisterNewUser();
+		}//end newUserButton
+		else if(e.getSource() == resetButton) {
+			userTextField.setText("");
+            passwordField.setText("");
+		}//end resetButton
+		else if(e.getSource() == showPassword) {
+			if (showPassword.isSelected()) {
+				passwordField.setEchoChar((char) 0);
+			}else {
+				passwordField.setEchoChar('*');
+			}
+		}//end showPassword
+	} //end actionPerformed
+	public static void main(String[] args) {
+		LoginPage frame = new LoginPage();
+		frame.setTitle("Welcome To The Login Page!");
+        frame.setVisible(true);
+        frame.setBounds(10, 10, 370, 450);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false); 
+	}//end main
+}//end of LoginPage program
