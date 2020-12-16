@@ -1,0 +1,74 @@
+import java.awt.Container;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+
+public class Store_Function extends JFrame implements ActionListener {
+	DatabaseManager databaseManager = new DatabaseManager();
+	Container container = getContentPane();
+	JLabel lblNewUserRegister = new JLabel("View Confirmation Appointment");
+	JLabel lblappointmentType = new JLabel("Enter Reservation ID:");
+	JTextField appointmentType = new JTextField ();
+	
+	JButton enter = new JButton("ENTER");
+	JButton back = new JButton("BACK");
+	public Store_Function() {
+		setLayoutManager();
+        setLocationAndSize();
+        addComponentsToContainer();
+        setTitle("***************");
+        addActionEvent();
+        setVisible(true);
+		setBounds(10, 10, 450, 250);
+	}//end constructor
+	public void setLayoutManager() {
+		container.setLayout(null);
+	}//end setLayoutManager
+	public void setLocationAndSize() {
+		lblNewUserRegister.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+	    lblNewUserRegister.setBounds(150, 5, 325, 50);
+	    
+	    lblappointmentType.setFont(new Font("Tahoma", Font.PLAIN, 16));
+	    lblappointmentType.setBounds(10, 80, 300, 43);
+	    appointmentType.setFont(new Font("Tahoma", Font.PLAIN, 16));
+	    appointmentType.setBounds(214, 80, 150, 40);
+	    
+	    back.setBounds(5, 50, 80, 30);
+	    enter.setBounds(180, 140, 80, 30);
+	}//end setLocationAndSize
+	public void addComponentsToContainer() {
+		container.add(lblNewUserRegister);
+		container.add(lblappointmentType);
+		container.add(appointmentType);
+		container.add(enter);
+		container.add(back);
+	}//end addComponentsToContainer
+	public void addActionEvent() {
+		enter.addActionListener(this);
+		back.addActionListener(this);
+	}//end addActionEvent
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String idAppointment = appointmentType.getText();
+		if(e.getSource()== enter) {
+			databaseManager.stored_function(idAppointment);
+		}//end enter
+		else if(e.getSource() == back) {
+			dispose();
+			new MainMenu();
+		}//end back
+	}//end actionPerformed
+	public static void main(String[] args) {
+		Store_Function frame = new Store_Function();
+		frame.setTitle("***************");
+        frame.setVisible(true);
+        frame.setBounds(10, 10, 450, 250);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false); 
+	}//end main
+}//end Store_Function class
