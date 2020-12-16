@@ -1,17 +1,107 @@
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 
 public class MainMenu extends JFrame implements ActionListener {
-
+	Container container = getContentPane();
+	JButton showAppoint = new JButton("Show Appointment");
+	JButton updateSalary = new JButton("Update Salary");
+	JButton countEmployee = new JButton("Employees working");
+	JButton showOptionService = new JButton("Show Service");
+	JButton calAverageRate = new JButton("Show Average Rate");
+	JButton prepare_Appointment = new JButton("Book Appointment");//prepare statement
+	JButton stored_procedure = new JButton("Price Threshold");//stored_procedure
+	JButton stored_function = new JButton("View Appointment"); //stored_function
+	JButton signOut = new JButton("Sign Out");
+	DatabaseManager databaseManager = new DatabaseManager();
 	public MainMenu() {
-	}
-
+		setLayoutManager();
+        setLocationAndSize();
+        addComponentsToContainer();
+        setTitle("*****Main Menu*****");
+        addActionEvent();
+        setVisible(true);
+        setBounds(10, 10, 370, 350);
+	}//end constructor
+	public void setLayoutManager() {
+		container.setLayout(null);
+	}//end setLayoutManager
+	public void setLocationAndSize() {
+		showAppoint.setBounds(15, 50, 160, 30);
+		updateSalary.setBounds(200, 50, 160, 30);
+		countEmployee.setBounds(15, 100, 160, 30);
+		showOptionService.setBounds(200, 150, 160, 30);
+		calAverageRate.setBounds(15, 150, 160, 30);
+		prepare_Appointment.setBounds(200, 100, 160, 30);
+		stored_procedure.setBounds(15, 200, 160, 30);
+		stored_function.setBounds(200,200, 160, 30);
+		signOut.setBounds(110, 250, 150, 30);		
+	}//end setLocationAndSize
+	public void addComponentsToContainer() {
+		container.add(showAppoint);
+		container.add(updateSalary);
+		container.add(countEmployee);
+		container.add(showOptionService);
+		container.add(calAverageRate);
+		container.add(prepare_Appointment);
+		container.add(stored_procedure);
+		container.add(stored_function);
+		container.add(signOut);
+	}//end addComponentsToContainer
+	public void addActionEvent() {
+		showAppoint.addActionListener(this);
+		updateSalary.addActionListener(this);
+		countEmployee.addActionListener(this);
+		showOptionService.addActionListener(this);
+		calAverageRate.addActionListener(this);
+		prepare_Appointment.addActionListener(this);
+		stored_procedure.addActionListener(this);
+		stored_function.addActionListener(this);
+		signOut.addActionListener(this);
+	}//end addActionEvent
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-}
+		if (e.getSource() == showAppoint) {
+			databaseManager.showAppointment();
+		//end showAppoint	
+		} else if(e.getSource()==updateSalary) {
+			databaseManager.updateAllEmployeeRate();
+		//end updateSalary	
+		} else if(e.getSource() == countEmployee) {
+			databaseManager.subQueries();
+		//end countEmployee
+		} else if(e.getSource() == showOptionService) {
+			databaseManager.showOption();//view
+		//end showOptionService
+		} else if(e.getSource() == calAverageRate) {
+			databaseManager.showAverageSalary();
+		//end calAverageRate
+		} else if(e.getSource() == prepare_Appointment) {
+			new Prepare_Statement();
+			dispose();
+		//end prepare_Appointment prepare_statement
+		} else if(e.getSource() == stored_procedure) {
+			new Store_Procedure();
+			dispose();
+		//end stored_procedure
+		} else if(e.getSource() == stored_function) {
+			new Store_Function();
+			dispose();		
+		//end stored_function
+		} else if(e.getSource() == signOut) {
+			dispose();
+			new LoginPage();
+		}//end signOut
+	}//end actionPerformed
+	public static void main(String[] args) {
+		MainMenu frame = new MainMenu();
+		frame.setTitle("*****Main Menu*****");
+        frame.setVisible(true);
+        frame.setBounds(10, 10, 370, 350);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false); 
+	}//end main
+}//end MainMenu program
