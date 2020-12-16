@@ -1,0 +1,69 @@
+import java.awt.Container;
+import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+
+public class Prepare_Statement extends JFrame implements ActionListener {//Prepared statement demo
+	DatabaseManager databaseManager = new DatabaseManager();
+	Container container = getContentPane();
+	JLabel lblNewUserRegister = new JLabel("Search Appointment");
+	JLabel lblappointmentType = new JLabel("What kind of appointment:");
+	JTextField appointmentType = new JTextField ();
+	
+	JButton enter = new JButton("ENTER");
+	JButton back = new JButton("BACK");
+	public Prepare_Statement() {
+		setLayoutManager();
+        setLocationAndSize();
+        addComponentsToContainer();
+        setTitle("***************");
+        addActionEvent();
+        setVisible(true);
+		setBounds(10, 10, 450, 250);
+	}//end constructor
+	public void setLayoutManager() {
+		container.setLayout(null);
+	}//end setLayoutManager
+	public void setLocationAndSize() {
+		lblNewUserRegister.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+	    lblNewUserRegister.setBounds(150, 5, 325, 50);
+	    
+	    lblappointmentType.setFont(new Font("Tahoma", Font.PLAIN, 16));
+	    lblappointmentType.setBounds(10, 80, 300, 43);
+	    appointmentType.setFont(new Font("Tahoma", Font.PLAIN, 16));
+	    appointmentType.setBounds(214, 80, 150, 40);
+	    
+	    back.setBounds(5, 50, 80, 30);
+	    enter.setBounds(180, 140, 80, 30);
+	}//end setLocationAndSize
+	public void addComponentsToContainer() {
+		container.add(lblNewUserRegister);
+		container.add(lblappointmentType);
+		container.add(appointmentType);
+		container.add(enter);
+		container.add(back);
+	}//end addComponentsToContainer
+	public void addActionEvent() {
+		enter.addActionListener(this);
+		back.addActionListener(this);
+	}//end addActionEvent
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String kindOfAppoint = appointmentType.getText();
+		if(e.getSource() == enter) {
+			databaseManager.prepare_statement(kindOfAppoint);
+		}//end enter
+		else if(e.getSource() == back) {
+			dispose();
+			new MainMenu();
+		}
+	}//end actionPerformed
+}//end Prepare_Statement class
