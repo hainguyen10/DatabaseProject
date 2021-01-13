@@ -11,10 +11,10 @@ public class DatabaseManager {
 	public Statement stmt;
 	public Connection conn;
 	public DatabaseManager() {
-		String databaseName = "hcn6330";
-		String userName = "hcn6330";
+		String databaseName = "";
+		String userName = "";
 		
-		String passWord = "UN3rnibl6";
+		String passWord = "";
 		conn = establish_connection (databaseName, userName, passWord);
 	}//end constructor
 	public Connection establish_connection(String database_name, String sql_username, String sql_passwd) {
