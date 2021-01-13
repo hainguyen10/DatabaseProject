@@ -1,17 +1,20 @@
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 
 public class DatabaseManager {
 	public Statement stmt;
 	public Connection conn;
 	public DatabaseManager() {
-		String databaseName = "";
-		String userName = "";
+		String databaseName = "hcn6330";
+		String userName = "hcn6330";
 		
-		String passWord = "";
+		String passWord = "UN3rnibl6";
 		conn = establish_connection (databaseName, userName, passWord);
 	}//end constructor
 	public Connection establish_connection(String database_name, String sql_username, String sql_passwd) {
@@ -30,15 +33,15 @@ public class DatabaseManager {
             System.out.println("VendorError:  " + e.getErrorCode());
         }       
         return conn;
-    }
+        }
 	public void openDataBase(Connection conn) throws SQLException {
-		stmt = conn.createStatement();
-	}//end OpenDatabase
-	public void closeDataBase() throws SQLException {
-		stmt.close();
-	}//end CloseDatabase
+   	  stmt = conn.createStatement();
+   }
+   public void closeDataBase() throws SQLException {
+ 	  stmt.close();
+   }//end CloseDatabase
 ///start write query.
-	public boolean validate_Login(String userName,String password) {
+	public boolean validate_Login(String userName,String password) {//check if an account exist
 		String sql = "SELECT * FROM Customers WHERE (Customer_ID = '"+userName+"' AND Password = '"+password+"')";
 		ResultSet rset;
 		try {
@@ -60,7 +63,7 @@ public class DatabaseManager {
 			}
 		}
 	}//end Validate_login method
-	public boolean register_New_User(String username, String passWord, String name, String address, String zipcode, String phoneNumber) {
+	public boolean register_New_User(String username, String passWord, String name, String address, String zipcode, String phoneNumber) {//register new user
 		String sql = "INSERT INTO Customers VALUES ('"+username+"','"+passWord+"','"+name+"','"+address+"','"+zipcode+"','"+phoneNumber+"')";
 		ResultSet rset;
 		try {
@@ -82,6 +85,168 @@ public class DatabaseManager {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-		}
+		}//end finally
 	}//end register_New_User method
+	public void showAppointment() {
+		try {
+			openDataBase(conn);
+			System.out.println("\n********Show Service Appointment*******\n");
+			ResultSet rset = stmt.executeQuery("SELECT * from Services, Reservations");
+			while (rset.next()) {
+				System.out.println("Service Types: "+rset.getString("Name")+" |   " + " Date: " + rset.getString("Date") +" |  "+" Time: "+rset.getString("Time"));
+			}//end loop
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				closeDataBase();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}//end showAppointment
+	public void showAverageSalary() {
+		try {
+			openDataBase(conn);
+			System.out.println("\n*********Show average salaries for employees********");
+			String sql = "SELECT * FROM Employees WHERE rate < (SELECT AVG(rate) FROM Employees)";
+			ResultSet rset = stmt.executeQuery(sql);
+			while (rset.next()) {
+				System.out.println("People with lower salaries than the average: " + "\t" + rset.getString("Employee_Name") + "\t" + rset.getString("rate"));
+			}//end loop
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				closeDataBase();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}//end finally
+	}//end showAverageSalary
+	public void updateAllEmployeeRate() {
+		try {
+			openDataBase(conn);
+			System.out.println("\n********Update Employees Rate*******\n");
+			ResultSet rset = stmt.executeQuery("SELECT * from Employees");
+			System.out.println("\n********Before Update*******\n");
+			while (rset.next()) {
+				System.out.println("Employees Name: "+rset.getString("Employee_Name") +" | "+" Employees Rate: " + rset.getString("Rate") +" | "+" Employees Hours: "+ rset.getString("Hours")+" | "+" Employees Phone Number: " +rset.getString("Phone_Number")+" | "+" Employees Street: "+rset.getString("Street")+" | "+" Employees ZIP: "+rset.getString("Zip"));
+			}//end loop
+			System.out.println("\n********After Update*******\n");
+            stmt.executeUpdate("update Employees set Rate = Rate*1.05");
+            rset = stmt.executeQuery("SELECT * from Employees");
+            while (rset.next()) {
+            	System.out.println("Employees Name: "+rset.getString("Employee_Name") +" | "+ " Employees Rate: " + rset.getString("Rate") +" | "+" Employees Hours: "+ rset.getString("Hours")+" | "+" Employees Phone Number: " +rset.getString("Phone_Number")+" | "+" Employees Street: "+rset.getString("Street")+" | "+" Employees ZIP: "+rset.getString("Zip"));
+            }//end loop
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				closeDataBase();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}//end finally
+	}//end updateAllEmployeeRate
+	public void subQueries() {
+		try {
+			openDataBase(conn);
+			System.out.println("\n********SubQueries*******\n");
+			String sql = "SELECT COUNT(Employee_ID) FROM Employees WHERE Employee_ID IN (SELECT Employee_ID FROM Reservations WHERE Date = '2020-10-17')";
+			ResultSet rset = stmt.executeQuery(sql);
+			while (rset.next()) {
+				System.out.println("How many people working: "+rset.getString("COUNT(Employee_ID)"));
+			}//end loop
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				closeDataBase();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}//end finally
+	}//end subQueries
+	public void showOption() { //view
+        try {
+    		System.out.println("***Service Listing Option***");
+        	openDataBase(conn);
+			Statement stmt = conn.createStatement();
+            ResultSet rset = stmt.executeQuery("SELECT * from Services");
+            while (rset.next()) {
+            	System.out.println("Service Types: " + rset.getString(2) + " | "+" Price: " + rset.getString(3)+" | "+" Minutes: "+rset.getString(4));
+            }//end while loop
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				closeDataBase();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}//end finally  
+	}//end showOption method
+	public void prepare_statement(String nameService) {//need an input
+		try {
+			openDataBase(conn);
+			PreparedStatement pStmt = conn.prepareStatement("select * from Services where Name = ?");
+			pStmt.setString(1, nameService); 
+            System.out.println("Prepared statement is " + pStmt);
+            ResultSet rset = pStmt.executeQuery();
+            while (rset.next()) {
+            	System.out.println("Service Name: "+rset.getString("Name") +" Cost: $"+ rset.getString("Price")+ " Time: "+rset.getString("TimeinMinutes"));
+            }//end loop
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				closeDataBase();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}//end finally
+	}//end prepare_statement method
+	public void stored_procedure(String priceThreshold) {//need input
+		try {
+			openDataBase(conn);
+			System.out.println("*****Stored procedure demo..*****");
+			int threshold = Integer.parseInt(priceThreshold);
+			System.out.println("Threshold = "+threshold);
+			CallableStatement cs = conn.prepareCall("{call CountProducts(?, ?)}");
+			cs.setInt(1, threshold);
+			cs.registerOutParameter(2, Types.INTEGER);
+			cs.executeQuery();
+			int productCount = cs.getInt(2);
+			System.out.println("Number of Services with price > "+threshold +" = "+productCount);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				closeDataBase();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}//end finally
+	}//end stored_procedure
+	public void stored_function(String reversationID) {//need input
+		try {
+			openDataBase(conn);
+			System.out.println("****Stored function demo..****");
+			CallableStatement cs = conn.prepareCall("{? = call EmployeesLevel(?)}");
+			cs.registerOutParameter(1, Types.DATE);
+			cs.setString(2, reversationID);
+            cs.execute();
+            System.out.println("The Date of the Appointment "+ cs.getDate(1));
+            
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				closeDataBase();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}//end finally
+	}//end stored_function
 }//end of Database Manager
