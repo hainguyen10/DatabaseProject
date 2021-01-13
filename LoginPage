@@ -76,6 +76,7 @@ public class LoginPage extends JFrame implements ActionListener{
 	        boolean result = databaseManager.validate_Login(userText, pwdText);
 	        if(result == true) {
 	        	JOptionPane.showMessageDialog(this, "Welcome");
+	        	new MainMenu();
                 dispose();
 	        } else {
 	        	JOptionPane.showMessageDialog(this, "Invalid Username or Password");
